@@ -1,16 +1,15 @@
-#include "scene.h"
+#include <GL/glew.h>
 
-#include <pxr/imaging/glf/glew.h>
+#include "scene.h"
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
 #ifdef _WIN32
-  #include <windows.h>
+#include <windows.h>
 #endif
 #include <GL/gl.h>
 #endif
 #include <GLFW/glfw3.h>
-
 #include <boost/predef/os.h>
 #include <pxr/base/gf/camera.h>
 #include <pxr/base/js/json.h>
@@ -20,23 +19,24 @@
 #include <pxr/usd/usd/inherits.h>
 #include <pxr/usd/usd/stage.h>
 #include <pxr/usd/usdGeom/xformable.h>
-#include <pxr/usdImaging/usdImagingGL/gl.h>
+#include <pxr/usdImaging/usdImagingGL/engine.h>
 
 #include <fstream>
+#include <iostream>
 #include <streambuf>
 
 PXR_NAMESPACE_USING_DIRECTIVE
 
 // Window dimensions.
-#define WIDTH 1280
+#define WIDTH  1280
 #define HEIGHT 960
 
 double scale = 150.0;
 Scene* scene = NULL;
 
 // Is called whenever a key is pressed/released via GLFW.
-void key_callback(
-        GLFWwindow* window, int key, int scancode, int action, int mode)
+void key_callback(GLFWwindow* window, int key, int scancode, int action,
+                  int mode)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -48,28 +48,22 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     scale *= pow(1.1, -yoffset);
 }
 
-void mouseButtonCallback(
-        GLFWwindow* window, int button, int action, int mods)
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-    if (scene && action == GLFW_PRESS)
-    {
-        scene->click();
-    }
+    if (scene && action == GLFW_PRESS) { scene->click(); }
 }
 
-void cursorPosCallback(
-        GLFWwindow* window, double xpos, double ypos)
+void cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 {
-    if (scene)
-    {
+    if (scene) {
         int width, height;
         glfwGetWindowSize(window, &width, &height);
 
-        scene->cursor(xpos/width, ypos/height);
+        scene->cursor(xpos / width, ypos / height);
     }
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     printf("Starting GLFW context\n");
     glfwInit();
@@ -92,8 +86,7 @@ int main(int argc, char **argv)
 
     // Create a GLFWwindow object that we can use for GLFW's functions.
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Switch", NULL, NULL);
-    if (!window)
-    {
+    if (!window) {
         printf("Can't create GLFW context\n");
         glfwTerminate();
         return 1;
@@ -111,15 +104,17 @@ int main(int argc, char **argv)
     // function pointers and extensions.
     glewExperimental = GL_TRUE;
     // Initialize GLEW to setup the OpenGL Function pointers.
-    GlfGlewInit();
+    if (glewInit() != GLEW_OK) {
+        std::cout << "Failed to initialize GLEW" << std::endl;
+        return -1;
+    }
 
     scene = new Scene;
 
     double timer = glfwGetTime();
 
     // Game loop
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         // Check if any events have been activiated (key pressed, mouse moved
         // etc.) and call corresponding response functions.
         glfwPollEvents();
