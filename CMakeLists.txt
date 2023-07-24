@@ -27,7 +27,6 @@ target_link_libraries(switch
         ${USD_BOOST_LIBRARIES}
         ${USD_LIBRARIES}
         ${Python_LIBRARIES}
-        glm
         libglew_static
         glfw
 )
