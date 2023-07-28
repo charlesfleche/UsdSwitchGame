@@ -69,20 +69,11 @@ int main(int argc, char** argv)
     glfwInit();
 
     // Set all the required options for GLFW.
-
-#if (BOOST_OS_WINDOWS)
-#else
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#if (BOOST_OS_MACOS)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-#else
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_FALSE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-#endif
     glfwWindowHint(GLFW_SAMPLES, 16);
-#endif
 
     // Create a GLFWwindow object that we can use for GLFW's functions.
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Switch", NULL, NULL);

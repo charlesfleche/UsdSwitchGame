@@ -125,11 +125,25 @@ Scene::Scene() : mWidth(0), mHeight(0), mWon(false)
     glGetIntegerv(GL_MINOR_VERSION, &minor);
     printf("OpenGL version is %i.%i\n", major, minor);
 
-    // printf("Hydra is %s\n",
-    //        UsdImagingGL::IsEnabledHydra() ? "enabled" : "disabled");
-
     mParams.frame = 1.0;
     mParams.complexity = 1.1f;
+
+    // add simple light
+    auto frustum = mCamera.GetFrustum();
+    auto cam_pos = frustum.GetPosition();
+    auto material = GlfSimpleMaterial();
+    auto lights = GlfSimpleLightVector();
+
+    auto l = GlfSimpleLight();
+    l.SetAmbient(GfVec4f(0, 0, 0, 0));
+    l.SetPosition(GfVec4f(cam_pos[0], cam_pos[1], cam_pos[2], 1));
+    lights.push_back(l);
+
+    material.SetAmbient(GfVec4f(0.2, 0.2, 0.2, 1.0));
+    material.SetSpecular(GfVec4f(0.1, 0.1, 0.1, 1.0));
+    material.SetShininess(32.0);
+
+    mRenderer.SetLightingState(lights, material, GfVec4f(0,0,0,1));
 }
 
 void Scene::prepare(float seconds)
