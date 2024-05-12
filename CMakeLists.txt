@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.12)
 project(switch VERSION 0.0.1 DESCRIPTION "switch")
 
 include(${PXR_USD_LOCATION}/pxrConfig.cmake)
-find_package(Boost REQUIRED COMPONENTS filesystem)
 
 include(GNUInstallDirs)
 
@@ -22,7 +21,6 @@ target_include_directories(${PROJECT_NAME}
 )
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
-    Boost::filesystem
     ${PXR_LIBRARIES}
     glfw
 )

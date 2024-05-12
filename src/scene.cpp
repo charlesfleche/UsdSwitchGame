@@ -1,14 +1,13 @@
 #include "scene.h"
 
 #include <boost/predef/os.h>
+#include <pxr/base/arch/systemInfo.h>
 #include <pxr/base/gf/vec4f.h>
 #include <pxr/usd/usd/primRange.h>
 #include <pxr/usd/usd/references.h>
 #include <pxr/usd/usdGeom/camera.h>
 #include <pxr/usd/usdGeom/xformCommonAPI.h>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
 #include <string>
 
 #if (BOOST_OS_WINDOWS)
@@ -20,47 +19,14 @@
 #include <mach-o/dyld.h>
 #endif
 
-// Returns the full path to the currently running executable.
-boost::filesystem::path currentPath()
-{
-#if (BOOST_OS_WINDOWS)
-    char* exePath;
-    if (_get_pgmptr(&exePath) != 0) { exePath = ""; }
-#elif (BOOST_OS_LINUX)
-    char exePath[PATH_MAX];
-    ssize_t len = ::readlink("/proc/self/exe", exePath, sizeof(exePath));
-    if (len == -1 || len == sizeof(exePath)) { len = 0; }
-    exePath[len] = '\0';
-#elif (BOOST_OS_MACOS)
-    char exePath[PATH_MAX];
-    uint32_t len = sizeof(exePath);
-    if (_NSGetExecutablePath(exePath, &len) != 0) {
-        exePath[0] = '\0';  // buffer too small (!)
-    }
-    else {
-        // resolve symlinks, ., .. if possible
-        char* canonicalPath = realpath(exePath, NULL);
-        if (canonicalPath != NULL) {
-            strncpy(exePath, canonicalPath, len);
-            free(canonicalPath);
-        }
-    }
-#endif
-
-    boost::system::error_code ec;
-    boost::filesystem::path path(boost::filesystem::canonical(
-        exePath, boost::filesystem::current_path(), ec));
-    return path.parent_path();
-}
-
 Scene::Scene() : mWidth(0), mHeight(0), mWon(false)
 {
-    boost::filesystem::path current = currentPath();
-    boost::filesystem::path boardPath = current / "board.usda";
-    boost::filesystem::path switchPath = current / "switch.usda";
+    std::string current = PXR_NS::ArchGetExecutablePath();
+    std::string boardPath = current + "/../board.usda";
+    std::string switchPath = current + "/../switch.usda";
 
-    mStage = UsdStage::Open(boardPath.string());
-    UsdStageRefPtr switchStage = UsdStage::Open(switchPath.string());
+    mStage = UsdStage::Open(boardPath);
+    UsdStageRefPtr switchStage = UsdStage::Open(switchPath);
 
     mBoard = mStage->GetPrimAtPath(SdfPath("/board1"));
     auto cameraPrim = mStage->GetPrimAtPath(SdfPath("/camera1"));
