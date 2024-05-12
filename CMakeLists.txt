@@ -24,7 +24,7 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
     Boost::filesystem
     ${PXR_LIBRARIES}
-        glfw
+    glfw
 )
 
 file(GLOB USDA_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "resources/*.usda")
