@@ -1,6 +1,3 @@
-[submodule "vendors/glew"]
-	path = vendors/glew
-	url = https://github.com/Perlmint/glew-cmake.git
 [submodule "vendors/glfw"]
 	path = vendors/glfw
 	url = https://github.com/glfw/glfw.git

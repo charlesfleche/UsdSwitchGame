@@ -2,8 +2,6 @@
 #ifndef __SCENE_H__
 #define __SCENE_H__
 
-#include <GL/glew.h>
-
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else

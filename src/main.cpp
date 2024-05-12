@@ -1,5 +1,3 @@
-#include <GL/glew.h>
-
 #include "scene.h"
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -90,15 +88,6 @@ int main(int argc, char** argv)
     glfwSetScrollCallback(window, scroll_callback);
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
     glfwSetCursorPosCallback(window, cursorPosCallback);
-
-    // Set this to true so GLEW knows to use a modern approach to retrieving
-    // function pointers and extensions.
-    glewExperimental = GL_TRUE;
-    // Initialize GLEW to setup the OpenGL Function pointers.
-    if (glewInit() != GLEW_OK) {
-        std::cout << "Failed to initialize GLEW" << std::endl;
-        return -1;
-    }
 
     scene = new Scene;
 
